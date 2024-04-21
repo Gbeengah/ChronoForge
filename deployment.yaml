@@ -1,19 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app
+  name: my-app  # Name of your deployment
 spec:
-  replicas: 3
+  replicas: 3  # Number of Pod replicas
+
+  # Selector to identify Pods belonging to this deployment
   selector:
     matchLabels:
       app: my-app
+
+  # Pod template definition
   template:
     metadata:
       labels:
-        app: my-app
+        app: my-app  # Matches the selector
+
     spec:
       containers:
-      - name: my-app
-        image: gbeengah/gheebhee:tag979
-        ports:
+      - name: my-app  # Name of the container in the Pod
+        image: gbeengah/gheebhee:tag979  # Docker image for the container
+        ports:  # Ports exposed by the container
         - containerPort: 8080
+
+---  # Separates the Deployment and Service definitions
+
+# Service definition to expose the deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service  # Name of the Service
+spec:
+  selector:  # Selects Pods with the label "app: my-app"
+    app: my-app
+  ports:  # Service port definition
+  - protocol: TCP  # Protocol (TCP in this case)
+    port: 80  # External port to access the service (can be different from container port)
+    targetPort: 8080  # Port on which Pods are listening (matches container port)
+        # (Optional) Define a type of Service here (e.g., NodePort, LoadBalancer)
