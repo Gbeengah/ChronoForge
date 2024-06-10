@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: gbeengah/gheebhee:tag979
+        ports:
+        - containerPort: 8080
+        resources:                  # Add this section for resource constraints
+          requests:
+            memory: "64Mi"         # Request 64MiB of memory
+            cpu: "250m"            # Request 250 milli CPUs
+          limits:
+            memory: "128Mi"        # Limit memory to 128MiB
+            cpu: "500m"            # Limit CPU usage to 500 milli CPUs
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: LoadBalancer          # Define the service type as LoadBalancer
